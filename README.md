@@ -1,7 +1,7 @@
 # echo-rest-api
 В данном проекте показан пример создания REST API на Go с использованием Echo framework.
 
-### В проекте использовалось
+### В проекте использованы
 #### HTTP
 - `github.com/labstack/echo` - для создания rest сервиса; использованы: _router_, _data binding_ и _data rendering_, _logger middleware_
 
