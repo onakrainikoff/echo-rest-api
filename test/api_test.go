@@ -19,7 +19,7 @@ import (
 func TestApi_GetCategories(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()
-	conf := &config.Config{LogLevel: 5}
+	conf := &config.Config{LogLevel: 0}
 	cs := mock.NewMockCategoryService(mockCtrl)
 	api := api.NewApi(conf, cs, nil)
 	req := httptest.NewRequest(echo.GET, "/api/categories", nil)

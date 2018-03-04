@@ -1,20 +1,20 @@
--- +migrate Up notransaction
-CREATE TABLE category2(
+-- +migrate Up
+CREATE TABLE category(
   id		 SERIAL,
   name   VARCHAR(100) NOT NULL,
-  constraint category_pk2 primary key(id)
+  constraint category_pk primary key(id)
 );
 
-CREATE TABLE product2(
+CREATE TABLE product(
   id		 SERIAL,
   category INTEGER NOT NULL,
   name   VARCHAR(200) NOT NULL,
   description TEXT NOT NULL,
   price numeric(10,2) NOT NULL,
-  constraint product_pk2 primary key(id),
-  constraint product_to_category2 foreign key (category) references category2(id) ON DELETE CASCADE
+  constraint product_pk primary key(id),
+  constraint product_to_category foreign key (category) references category(id) ON DELETE CASCADE
 );
 
--- +migrate Down notransaction
-DROP TABLE product2;
-DROP TABLE category2;
+-- +migrate Down
+DROP TABLE product;
+DROP TABLE category;
