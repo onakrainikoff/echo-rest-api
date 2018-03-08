@@ -1,3 +1,15 @@
+// Echo-REST-API.
+// Пример создания REST API на Echo framework
+// Version: 0.0.1
+// Schemes: http
+// Host: localhost
+// BasePath: /api
+// Consumes:
+// - application/json
+// Produces:
+// - application/json
+// Contact: uchonyy@gmail.com
+// swagger:meta
 package api
 
 import (
@@ -45,6 +57,7 @@ func NewApi(conf *config.Config, cs service.CategoryService, ps service.ProductS
 		api.apiInfo.MW = append(api.apiInfo.MW, "Logger")
 	}
 	api.Http.GET("/", api.index)
+	api.Http.Static("/spec", "spec")
 	api.Http.GET("/api/categories", api.getCategories)
 	api.Http.GET("/api/categories/:id", api.getCategory)
 	api.Http.POST("/api/categories", api.createCategory)
@@ -73,10 +86,31 @@ func (api *Api) GetApiInfo() ApiInfo {
 }
 
 func (api *Api) index(c echo.Context) error {
-	mas := map[string]string{"msg": "ok"}
-	return c.JSON(http.StatusOK, mas)
+	return c.Redirect(http.StatusMovedPermanently, "/spec/api.json")
 }
 
+func (api *Api) spec(c echo.Context) error {
+	return c.Inline("spec/api.json", "api.json")
+}
+
+// swagger:operation GET /categories/{id} getCategory
+// ---
+// description: Получить категорию
+// parameters:
+// - name: id
+//   in: path
+//   description: id необходимой категории
+//   required: true
+//   type: int
+// responses:
+//  '200':
+//    schema:
+//      $ref: '#/definitions/Category'
+//  '400':
+//     description: Bad request param `id`
+//  '404':
+//     description: Category `id`= not found
+//
 func (api *Api) getCategory(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -92,6 +126,16 @@ func (api *Api) getCategory(c echo.Context) error {
 	return c.JSON(http.StatusOK, cat)
 }
 
+// swagger:operation GET /categories getCategories
+// ---
+// description: Получить список категорий
+// responses:
+//  '200':
+//    schema:
+//      type: array
+//      items:
+//        $ref: '#/definitions/Category'
+//
 func (api *Api) getCategories(c echo.Context) error {
 	cats, err := api.cs.GetCategories()
 	if err != nil {
@@ -103,6 +147,23 @@ func (api *Api) getCategories(c echo.Context) error {
 	return c.JSON(http.StatusOK, cats)
 }
 
+// swagger:operation POST /categories createCategory
+// ---
+// description: Создать категорию
+// parameters:
+// - name: category
+//   in: body
+//   description: новая категория
+//   required: true
+//   schema:
+//     $ref: '#/definitions/Category'
+// responses:
+//  '201':
+//    schema:
+//      $ref: '#/definitions/Category'
+//  '400':
+//     description: Bad request param
+//
 func (api *Api) createCategory(c echo.Context) error {
 	req := &model.Category{}
 	if err := c.Bind(req); err != nil {
@@ -119,6 +180,27 @@ func (api *Api) createCategory(c echo.Context) error {
 	return c.JSON(http.StatusCreated, map[string]*int{"id": res})
 }
 
+// swagger:operation PUT /categories/{id} updateCategory
+// ---
+// description: Обновить категорию
+// parameters:
+// - name: id
+//   in: path
+//   description: id необходимой категории
+//   required: true
+//   type: int
+// - name: category
+//   in: body
+//   description: измененная категория
+//   required: true
+//   schema:
+//     $ref: '#/definitions/Category'
+// responses:
+//  '204':
+//     description: Категория обновлена
+//  '400':
+//     description: Bad request param
+//
 func (api *Api) updateCategory(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -143,6 +225,23 @@ func (api *Api) updateCategory(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
+// swagger:operation DELETE /categories/{id} deleteCategory
+// ---
+// description: Удалить категорию
+// parameters:
+// - name: id
+//   in: path
+//   description: id необходимой категории
+//   required: true
+//   type: int
+// responses:
+//  '204':
+//     description: Категория удалена
+//  '400':
+//     description: Bad request param `id`
+//  '404':
+//     description: Category `id`= not found
+//
 func (api *Api) deleteCategory(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -159,6 +258,24 @@ func (api *Api) deleteCategory(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
+// swagger:operation GET /products/{id} getProduct
+// ---
+// description: Получить продукт
+// parameters:
+// - name: id
+//   in: path
+//   description: id необходимого продукта
+//   required: true
+//   type: int
+// responses:
+//  '200':
+//    schema:
+//      $ref: '#/definitions/Product'
+//  '400':
+//     description: Bad request param `id`
+//  '404':
+//     description: Product `id`= not found
+//
 func (api *Api) getProduct(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -174,6 +291,22 @@ func (api *Api) getProduct(c echo.Context) error {
 	return c.JSON(http.StatusOK, prod)
 }
 
+// swagger:operation GET /products getProducts
+// ---
+// description: Получить список продуктов
+// parameters:
+// - name: category
+//   in: path
+//   description: id категории по которой выбрать продукты
+//   required: false
+//   type: int
+// responses:
+//  '200':
+//    schema:
+//      type: array
+//      items:
+//        $ref: '#/definitions/Product'
+//
 func (api *Api) getProducts(c echo.Context) error {
 	var products []*model.Product
 	var err error
@@ -192,6 +325,23 @@ func (api *Api) getProducts(c echo.Context) error {
 	return c.JSON(http.StatusOK, products)
 }
 
+// swagger:operation POST /products createProduct
+// ---
+// description: Создать продукт
+// parameters:
+// - name: product
+//   in: body
+//   description: новый продукт
+//   required: true
+//   schema:
+//     $ref: '#/definitions/Product'
+// responses:
+//  '201':
+//    schema:
+//      $ref: '#/definitions/Product'
+//  '400':
+//     description: Bad request param
+//
 func (api *Api) createProduct(c echo.Context) error {
 	req := &model.Product{}
 	if err := c.Bind(req); err != nil {
@@ -207,6 +357,27 @@ func (api *Api) createProduct(c echo.Context) error {
 	return c.JSON(http.StatusCreated, map[string]*int{"id": res})
 }
 
+// swagger:operation PUT /products/{id} updateProduct
+// ---
+// description: Обновить продукт
+// parameters:
+// - name: id
+//   in: path
+//   description: id необходимого продукта
+//   required: true
+//   type: int
+// - name: product
+//   in: body
+//   description: измененный продукт
+//   required: true
+//   schema:
+//     $ref: '#/definitions/Product'
+// responses:
+//  '204':
+//     description: Продукт обновлена
+//  '400':
+//     description: Bad request param
+//
 func (api *Api) updateProduct(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -230,6 +401,23 @@ func (api *Api) updateProduct(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
+// swagger:operation DELETE /products/{id} deleteProduct
+// ---
+// description: Удалить продукт
+// parameters:
+// - name: id
+//   in: path
+//   description: id необходимого продукта
+//   required: true
+//   type: int
+// responses:
+//  '204':
+//     description: Категория удалена
+//  '400':
+//     description: Bad request param `id`
+//  '404':
+//     description: Product `id`= not found
+//
 func (api *Api) deleteProduct(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -239,7 +427,7 @@ func (api *Api) deleteProduct(c echo.Context) error {
 		if err != sql.ErrNoRows {
 			return err
 		} else {
-			return echo.NewHTTPError(http.StatusNotFound, "Category `id` = ", id, " not found")
+			return echo.NewHTTPError(http.StatusNotFound, "Product `id` = ", id, " not found")
 		}
 	}
 

@@ -1,0 +1,335 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "Пример создания REST API на Echo framework",
+    "title": "Echo-REST-API.",
+    "contact": {
+      "email": "uchonyy@gmail.com"
+    },
+    "version": "0.0.1"
+  },
+  "host": "localhost",
+  "basePath": "/api",
+  "paths": {
+    "/categories": {
+      "get": {
+        "description": "Получить список категорий",
+        "operationId": "getCategories",
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Category"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Создать категорию",
+        "operationId": "createCategory",
+        "parameters": [
+          {
+            "description": "новая категория",
+            "name": "category",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          },
+          "400": {
+            "description": "Bad request param"
+          }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "get": {
+        "description": "Получить категорию",
+        "operationId": "getCategory",
+        "parameters": [
+          {
+            "type": "int",
+            "description": "id необходимой категории",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          },
+          "400": {
+            "description": "Bad request param `id`"
+          },
+          "404": {
+            "description": "Category `id`= not found"
+          }
+        }
+      },
+      "put": {
+        "description": "Обновить категорию",
+        "operationId": "updateCategory",
+        "parameters": [
+          {
+            "type": "int",
+            "description": "id необходимой категории",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "измененная категория",
+            "name": "category",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Категория обновлена"
+          },
+          "400": {
+            "description": "Bad request param"
+          }
+        }
+      },
+      "delete": {
+        "description": "Удалить категорию",
+        "operationId": "deleteCategory",
+        "parameters": [
+          {
+            "type": "int",
+            "description": "id необходимой категории",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Категория удалена"
+          },
+          "400": {
+            "description": "Bad request param `id`"
+          },
+          "404": {
+            "description": "Category `id`= not found"
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "description": "Получить список продуктов",
+        "operationId": "getProducts",
+        "parameters": [
+          {
+            "type": "int",
+            "description": "id категории по которой выбрать продукты",
+            "name": "category",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Product"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Создать продукт",
+        "operationId": "createProduct",
+        "parameters": [
+          {
+            "description": "новый продукт",
+            "name": "product",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          },
+          "400": {
+            "description": "Bad request param"
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "description": "Получить продукт",
+        "operationId": "getProduct",
+        "parameters": [
+          {
+            "type": "int",
+            "description": "id необходимого продукта",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          },
+          "400": {
+            "description": "Bad request param `id`"
+          },
+          "404": {
+            "description": "Product `id`= not found"
+          }
+        }
+      },
+      "put": {
+        "description": "Обновить продукт",
+        "operationId": "updateProduct",
+        "parameters": [
+          {
+            "type": "int",
+            "description": "id необходимого продукта",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "измененный продукт",
+            "name": "product",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Продукт обновлена"
+          },
+          "400": {
+            "description": "Bad request param"
+          }
+        }
+      },
+      "delete": {
+        "description": "Удалить продукт",
+        "operationId": "deleteProduct",
+        "parameters": [
+          {
+            "type": "int",
+            "description": "id необходимого продукта",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Категория удалена"
+          },
+          "400": {
+            "description": "Bad request param `id`"
+          },
+          "404": {
+            "description": "Product `id`= not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Category": {
+      "description": "Сущность категория продукта",
+      "type": "object",
+      "title": "Категория.",
+      "properties": {
+        "id": {
+          "description": "id категории",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Id"
+        },
+        "name": {
+          "description": "название категории",
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "echo-rest-api/model"
+    },
+    "Product": {
+      "description": "Сущность продукт",
+      "type": "object",
+      "title": "Продукт.",
+      "properties": {
+        "category": {
+          "description": "id категория",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Category"
+        },
+        "desc": {
+          "description": "описание",
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "id": {
+          "description": "id продукта",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Id"
+        },
+        "name": {
+          "description": "название",
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "price": {
+          "description": "цена",
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Price"
+        }
+      },
+      "x-go-package": "echo-rest-api/model"
+    }
+  }
+}
